@@ -2,7 +2,9 @@ import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 import type { Conversation, ConversationDetail, TokenResponse, User } from '../types';
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
+
+console.log('API Base URL:', API_BASE_URL || 'Using relative paths (proxied)');
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -14,8 +16,20 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  console.log('API Request:', config.method?.toUpperCase(), config.url);
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => {
+    console.log('API Response:', response.status, response.config.url);
+    return response;
+  },
+  (error) => {
+    console.error('API Error:', error.response?.status, error.response?.data, error.config?.url);
+    return Promise.reject(error);
+  }
+);
 
 export async function register(email: string, password: string): Promise<TokenResponse> {
   const { data } = await api.post<TokenResponse>('/auth/register', { email, password });
@@ -54,7 +68,7 @@ type StreamHandlers = {
 
 export async function streamChat(message: string, conversationId: number | null, handlers: StreamHandlers) {
   const token = useAuthStore.getState().token;
-  const response = await fetch(`${API_BASE_URL}/chat/stream`, {
+  const response = await fetch('/chat/stream', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
