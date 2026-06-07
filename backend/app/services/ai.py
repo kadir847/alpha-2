@@ -20,12 +20,37 @@ class AIProvider(ABC):
 
 
 class DemoProvider(AIProvider):
+    @staticmethod
+    def _is_violent_request(text: str) -> bool:
+        normalized = text.lower()
+        violent_terms = [
+            "kill",
+            "murder",
+            "shoot",
+            "stab",
+            "bomb",
+            "attack",
+            "hurt",
+            "violence",
+            "assault",
+            "weapon",
+            "torture",
+            "harm",
+        ]
+        return any(term in normalized for term in violent_terms)
+
     async def stream(self, messages: list[dict[str, str]]) -> AsyncIterator[str]:
         latest = next((message["content"] for message in reversed(messages) if message["role"] == "user"), "")
-        response = (
-            "Alpha 2 is running in demo mode because no provider API key is configured. "
-            f"You said: {latest}"
-        )
+        if self._is_violent_request(latest):
+            response = (
+                "I’m here to help with safe and constructive requests, but I can’t assist with violence or harm. "
+                "Please ask me something else."
+            )
+        else:
+            response = (
+                "Alpha 2 is running in demo mode because no provider API key is configured. "
+                f"You said: {latest}"
+            )
         for word in response.split(" "):
             yield word + " "
 

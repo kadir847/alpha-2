@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
-import type { Conversation, ConversationDetail, TokenResponse, User } from '../types';
+import type { AiStatus, Conversation, ConversationDetail, TokenResponse, User } from '../types';
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
@@ -43,6 +43,11 @@ export async function login(email: string, password: string): Promise<TokenRespo
 
 export async function getMe(): Promise<User> {
   const { data } = await api.get<User>('/auth/me');
+  return data;
+}
+
+export async function getAiStatus(): Promise<AiStatus> {
+  const { data } = await api.get<AiStatus>('/ai/status');
   return data;
 }
 

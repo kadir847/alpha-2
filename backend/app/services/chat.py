@@ -50,7 +50,14 @@ def load_conversation_with_messages(db: Session, conversation_id: int) -> Conver
 def build_context(conversation: Conversation) -> list[dict[str, str]]:
     messages = list(conversation.messages)[-settings.max_context_messages :]
     context: list[dict[str, str]] = [
-        {"role": "system", "content": "You are Alpha 2, a precise, helpful AI assistant for professional work."}
+        {
+            "role": "system",
+            "content": (
+                "You are ChatGPT, a helpful and professional AI assistant. Answer user requests clearly, accurately, and politely. "
+                "If a user asks for violence, illegal behavior, or harm, refuse safely and do not provide guidance for those requests. "
+                "Otherwise, help with creative, technical, and conversational questions to the best of your ability."
+            ),
+        }
     ]
     if conversation.summary:
         context.append({"role": "system", "content": f"Conversation summary so far: {conversation.summary}"})

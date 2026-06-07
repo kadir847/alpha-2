@@ -45,6 +45,9 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
           if (error.response?.data?.detail) {
             errorDetails = JSON.stringify(error.response.data.detail);
           }
+        } else if (!error.response) {
+          errorMessage = 'Cannot connect to server. Is the backend running?';
+          errorDetails = error.message;
         } else if (error.response?.data?.detail) {
           errorMessage = error.response.data.detail;
         } else if (error.message === 'Network Error') {

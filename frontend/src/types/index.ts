@@ -21,6 +21,14 @@ export type ConversationDetail = Conversation & {
   messages: Message[];
 };
 
+export type AiStatus = {
+  requested_provider: string;
+  active_provider: string;
+  demo_mode: boolean;
+  configured: boolean;
+  ai_model: string;
+};
+
 export type TokenResponse = {
   access_token: string;
   token_type: string;

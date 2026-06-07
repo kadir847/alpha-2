@@ -6,7 +6,7 @@ from app.core.rate_limit import RateLimitMiddleware
 from app.db.base import Base
 from app.db.session import engine
 from app.models import Conversation, Message, User
-from app.routers import auth, chat, conversations, health
+from app.routers import auth, ai, chat, conversations, health
 
 app = FastAPI(title=settings.app_name, version="1.0.0")
 
@@ -21,6 +21,7 @@ app.add_middleware(RateLimitMiddleware)
 
 app.include_router(health.router)
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.include_router(ai.router, prefix="/ai", tags=["ai"])
 app.include_router(chat.router, prefix="/chat", tags=["chat"])
 app.include_router(conversations.router, prefix="/conversations", tags=["conversations"])
 
